@@ -47,6 +47,10 @@ export default {
         url: 'https://api.xinlangapi.com/xinlangapi.php/provide/vod/from/xlm3u8/',
         categories: ['动作片', '爱情片', '喜剧片', '科幻片', '恐怖片', '剧情片', '战争片', '动漫电影', '短剧', '大陆剧', '欧美剧', '港澳剧', '韩剧', '日剧', '台湾剧', '泰剧', '动漫', '综艺', '纪录片', '体育'],
     },
+    clm3u8: {
+        url: 'https://www.caoliuzyw.com/api.php/provide/vod/from/clm3u8',
+        categories: ['国产传媒', '国产自拍', '女优合集', '中文字幕', '亚洲无码', '亚洲有码', '国产探花', '人妻熟女', '强奸乱伦', '网曝门事件', '绿帽淫妻', '欧美情色', '动漫卡通', '美女主播', '三级伦理', '人妻熟女', 'AV解说', '国产乱伦'],
+    },
     alist: [
         {
             name: '🐉神族九帝',

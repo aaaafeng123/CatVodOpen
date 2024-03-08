@@ -11,8 +11,8 @@ export default {
     quark: {
     cookie: ''
     },
-    weixine: {
-        url: 'https://wogg.xyz',
+    ysche: {
+        url: 'http://www.weixine.link',
     },
     wogg: {
         url: 'https://wogg.xyz',

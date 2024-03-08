@@ -8,6 +8,12 @@ export default {
         token: '',
         token280: '',
     },
+    quark: {
+    cookie: ''
+},
+weixine: {
+    url: 'https://wogg.xyz',
+},
     wogg: {
         url: 'https://wogg.xyz',
     },

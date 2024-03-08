@@ -10,10 +10,10 @@ export default {
     },
     quark: {
     cookie: ''
-},
-weixine: {
-    url: 'https://wogg.xyz',
-},
+    },
+    weixine: {
+        url: 'https://wogg.xyz',
+    },
     wogg: {
         url: 'https://wogg.xyz',
     },

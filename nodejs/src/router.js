@@ -7,6 +7,7 @@ import _13bqg from './spider/book/13bqg.js';
 import copymanga from './spider/book/copymanga.js';
 import ffm3u8 from './spider/video/ffm3u8.js';
 import wogg from './spider/video/wogg.js';
+import ysche from './spider/video/ysche.js';
 import tudou from './spider/video/tudou.js';
 import wobg from './spider/video/wobg.js';
 import maiyoux from './spider/video/maiyoux.js';
@@ -19,7 +20,7 @@ import laobaigs from './spider/book/laobaigs.js';
 import ng from './spider/video/ng.js';
 import baozi from './spider/book/baozi.js';
 
-const spiders = [douban, kunyu77, kkys, ng, ffm3u8, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, tudou, wobg, maiyoux, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8];
+const spiders = [douban, kunyu77, kkys, ng, ffm3u8, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, ysche, tudou, wobg, maiyoux, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8];
 const spiderPrefix = '/spider';
 
 /**

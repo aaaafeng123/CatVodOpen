@@ -21,10 +21,12 @@ import ng from './spider/video/ng.js';
 import baozi from './spider/book/baozi.js';
 import wenku from './spider/book/wenku.js';
 import bengou from './spider/book/bengou.js';
+import fengche from './spider/book/fengche.js';
 import nicoletv from './spider/video/nicoletv.js';
 import clm3u8 from './spider/video/clm3u8.js';
+import xiaoya from './spider/video/xiaoya.js';
 
-const spiders = [douban, kunyu77, kkys, ng, ffm3u8, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, ysche, tudou, wobg, maiyoux, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8, clm3u8, wenku, bengou, nicoletv];
+const spiders = [douban, kunyu77, kkys, ng, ffm3u8, xiaoya, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, ysche, tudou, wobg, maiyoux, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8, clm3u8, wenku, fengche, bengou, nicoletv];
 const spiderPrefix = '/spider';
 
 /**

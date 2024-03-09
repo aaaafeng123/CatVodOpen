@@ -4,9 +4,6 @@ export default {
             bbbb: 'aaaaa',
         },
     },
-    xiaoya: {
-        url: 'http://192.168.0.222:4567/vod1/'
-    },
     ali: {
         token: '',
         token280: '',

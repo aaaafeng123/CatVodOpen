@@ -23,6 +23,9 @@ export default {
     wobg: {
         url: 'https://wobge.run.goorm.io',
     },
+    live:{
+        url: '',
+    },
     hhm3u8: {
         url: 'https://hhzyapi.com/api.php/provide/vod/from/hhm3u8/',
         categories: ['动作片', '爱情片', '喜剧片', '科幻片', '恐怖片', '剧情片', '战争片', '灾难片', '悬疑片', '犯罪片', '奇幻片', '短剧', '内地剧', '欧美剧', '香港剧', '韩剧', '日剧', '马泰剧', '中国动漫', '日本动漫', '欧美动漫', '欧美动漫', '大陆综艺', '港台综艺', '日韩综艺', '欧美综艺', '记录片'],

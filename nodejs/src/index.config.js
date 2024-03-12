@@ -9,7 +9,7 @@ export default {
         token280: '',
     },
     quark: {
-    cookie: '',
+          cookie: '',
     },
     ysche: {
         url: 'http://www.weixine.link',
@@ -18,10 +18,13 @@ export default {
         url: 'https://wogg.xyz',
     },
     tudou: {
-    url: 'https://aliz.lvdoui.top',
+        url: 'https://aliz.lvdoui.top',
     },
     wobg: {
         url: 'https://wobge.run.goorm.io',
+    },
+    ttkx: {
+    url: 'www.kxys.site:66',
     },
     live:{
         url: '',

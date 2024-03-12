@@ -9,7 +9,7 @@ export default {
         token280: '',
     },
     quark: {
-    cookie: ''
+    cookie: '',
     },
     ysche: {
         url: 'http://www.weixine.link',

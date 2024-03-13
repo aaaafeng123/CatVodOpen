@@ -24,7 +24,7 @@ export default {
         url: 'https://wobge.run.goorm.io',
     },
     ttkx: {
-    url: 'www.kxys.site:66',
+    url: 'http://www.kxys.site:66/',
     },
     live:{
         url: '',

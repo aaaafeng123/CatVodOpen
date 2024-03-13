@@ -29,6 +29,10 @@ export default {
     live:{
         url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',
     },
+    wjm3u8: {
+        url: 'https://api.wujinapi.me/api.php/provide/vod/from/wjm3u8/at/xml/',
+        categories: ['短剧', '大陆综艺', '日本剧', '美国剧', '剧情片', '动作片', '国产剧', '恐怖片', '泰剧', '国产动漫', '日韩综艺', '港台综艺', '爱情片', '韩国剧', '香港剧', '海外剧', '纪录片', '喜剧片', '欧美动漫', '体育赛事', '日韩动漫', '台湾剧', '动画片', '喜剧', '影视解说', '科幻片', '悬疑片'],
+    },
     hhm3u8: {
         url: 'https://hhzyapi.com/api.php/provide/vod/from/hhm3u8/',
         categories: ['动作片', '爱情片', '喜剧片', '科幻片', '恐怖片', '剧情片', '战争片', '灾难片', '悬疑片', '犯罪片', '奇幻片', '短剧', '内地剧', '欧美剧', '香港剧', '韩剧', '日剧', '马泰剧', '中国动漫', '日本动漫', '欧美动漫', '欧美动漫', '大陆综艺', '港台综艺', '日韩综艺', '欧美综艺', '记录片'],

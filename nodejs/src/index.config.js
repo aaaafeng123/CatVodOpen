@@ -24,10 +24,10 @@ export default {
         url: 'https://wobge.run.goorm.io',
     },
     ttkx: {
-    url: 'http://www.kxys.site:66/',
+    url: 'http://www.ttkx.live:3328',
     },
     live:{
-        url: '',
+        url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',
     },
     hhm3u8: {
         url: 'https://hhzyapi.com/api.php/provide/vod/from/hhm3u8/',

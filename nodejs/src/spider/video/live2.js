@@ -123,7 +123,7 @@ async function home(inReq, _outResp) {
 
 async function category(inReq, _outResp) {
     const tid = inReq.body.id;
-    let pg = inReq.body.page;
+    const pg = inReq.body.page;
     if (_.isEmpty(channels[tid])) return '{}';
     let videos = [];
     for (let channelName in channels[tid]) {

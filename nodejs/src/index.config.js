@@ -32,6 +32,12 @@ export default {
     czzy: {
         url: 'https://cz01.vip'
     },
+    ikanbot: {
+    url: 'https://www.aikanbot.com'
+    },
+    libvio: {
+        url: 'https://libvio.app'
+    },
     live:{
         url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',
     },

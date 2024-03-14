@@ -1,6 +1,7 @@
 // 自动从 地址发布页 获取&跳转url地址
 // import { Crypto, load, _ } from '../../util/cat.js';
 import req from '../../util/req.js';
+
 import CryptoJS from 'crypto-js';
 import { load } from 'cheerio';
 
@@ -8,7 +9,6 @@ import pkg from 'lodash';
 const { _ } = pkg;
 
 let key = 'czzy';
-let host = 'https://cz01.vip/'; // 厂长地址发布页
 let url = '';
 let siteKey = '';
 let siteType = 0;
@@ -57,7 +57,8 @@ async function init(inReq, outResp) {
     // siteType = cfg.stype;
     // url = await checkValidUrl(null);
     // let validUrl = ext;
-    let html = await request(host);
+
+    let html = await request(inReq.server.config.czzy.url);
     let matches = html.matchAll(/推荐访问<a href="(.*)"/g);
     for (let match of matches) {
         try {
@@ -130,6 +131,7 @@ async function category(inReq, _outResp) {
 
     const tag = extend.tag || '';
     const link = url + '/movie_bt' + (tag.length > 0 ? `/movie_bt_tags/${tag}` : '') + '/movie_bt_series/' + tid + (pg > 1 ? `/page/${pg}` : '');
+    // const link = url + "/" + tid + (extend.area || "") + (extend.year || "") + (extend.class || "") + (extend.catedd || "") + "/page/" + pg;
     const html = await request(link);
     const $ = load(html);
     const items = $('div.mrb > ul > li');
@@ -203,7 +205,6 @@ async function detail(inReq, _outResp) {
         });
         vod.vod_play_from = key;
         vod.vod_play_url = playlist.join('#');
-        console.log(vod.vod_play_url);
         videos.push(vod);
     }
     
@@ -212,52 +213,99 @@ async function detail(inReq, _outResp) {
     };
 }
 
-var parse = [];
+// var parse = [];
 async function play(inReq, _outResp) {
     const id = inReq.body.id;
 
     const link = url + '/v_play/' + id + '.html';
     const html = await request(link);
-    console.log("play:" + html)
-    console.log(html);
     const $ = load(html);
-    const iframe = $('body iframe[src*=Cloud]');
+    
+    // const iframe = $('body iframe[src*=Cloud]');
+    const iframe = $('.videoplay iframe');
     if (iframe.length > 0) {
+        const rUrl = iframe[0].attribs.src;
+
+        // 请求
         const iframeHtml = (
-            await req(iframe[0].attribs.src, {
+            await req(rUrl, {
                 headers: {
                     Referer: link,
                     'User-Agent': UA,
                 },
             })
         ).data;
-        let code = iframeHtml
-            .match(/var url = '(.*?)'/)[1]
-            .split('')
-            .reverse()
-            .join('');
-        let temp = '';
-        for (let i = 0x0; i < code.length; i = i + 0x2) {
-            temp += String.fromCharCode(parseInt(code[i] + code[i + 0x1], 0x10));
+
+        const rand = iframeHtml.match(/var rand = "(.*?)"/); // .split('').reverse().join('');
+        const encrypted = iframeHtml.match(/var player = "(.*?)"/); // .split('').reverse().join('');
+        if (!_.isEmpty(rand) && !_.isEmpty(encrypted)){
+            const key = CryptoJS.enc.Utf8.parse('VFBTzdujpR9FWBhe');
+            const iv = CryptoJS.enc.Utf8.parse(rand);
+
+            const decrypted = decryptPlayer(encrypted[1], 'VFBTzdujpR9FWBhe', rand[1]);
+
+            const list = JSON.parse(decrypted);
+            return JSON.stringify({
+                parse: 0,
+                url: list.url,
+            });
+        } else {
+            const resultv2Match = iframeHtml.match(/var result_v2 = {(.*?)};/);
+            if (!_.isEmpty(resultv2Match)) {
+                const resultv2 = JSON.parse('{' + resultv2Match[1] + '}');
+                const playUrl = decryptResultV2(resultv2.data);
+                return ({
+                    parse: 0,
+                    url: playUrl,
+                });
+            } else {
+                return ({
+                    parse: 0,
+                    url: rUrl,
+                });
+            }
         }
-        const playUrl = temp.substring(0x0, (temp.length - 0x7) / 0x2) + temp.substring((temp.length - 0x7) / 0x2 + 0x7);
-        console.log("playUrl1:" + playUrl)
-        return JSON.stringify({
-            parse: 0,
-            url: playUrl,
-        });
     } else {
         const js = $('script:contains(window.wp_nonce)').html();
         const group = js.match(/(var.*)eval\((\w*\(\w*\))\)/);
         const md5 = CryptoJS;
         const result = eval(group[1] + group[2]);
         const playUrl = result.match(/url:.*?['"](.*?)['"]/)[1];
-        console.log("playUrl2:" + playUrl)
         return JSON.stringify({
             parse: 0,
             url: playUrl,
         });
     }
+}
+
+function decryptPlayer(text, key, iv) {
+    const keyData = CryptoJS.enc.Utf8.parse(key || 'PBfAUnTdMjNDe6pL');
+    const ivData = CryptoJS.enc.Utf8.parse(iv || 'sENS6bVbwSfvnXrj');
+    const content = CryptoJS.AES.decrypt(text, keyData, {
+        iv: ivData,
+        padding: CryptoJS.pad.Pkcs7
+    }).toString(CryptoJS.enc.Utf8);
+    return content;
+
+    /* 原来的解密
+    var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    
+    // 转换为 utf8 字符串
+    decrypted = CryptoJS.enc.Utf8.stringify(decrypted);*/
+}
+
+function decryptResultV2(text) {
+    const data = text.split('').reverse().join('');
+    const hexData = CryptoJS.enc.Hex.parse(data);
+    const decoded = hexData.toString(CryptoJS.enc.Utf8);
+    const pos = (decoded.length - 7) / 2;
+    const firstPart = decoded.substring(0, pos);
+    const secondPart = decoded.substring(pos + 7);
+    return firstPart + secondPart;
 }
 
 async function search(inReq, _outResp) {
@@ -288,7 +336,7 @@ async function search(inReq, _outResp) {
     });
 }
 
-async function test(inReq, outResp) {
+async function test2(inReq, outResp) {
     try {
         const printErr = function (json) {
             if (json.statusCode && json.statusCode == 500) {
@@ -314,7 +362,7 @@ async function test(inReq, outResp) {
             printErr(resp.json());
             if (dataResult.category.list.length > 0) {
                 resp = await inReq.server.inject().post(`${prefix}/detail`).payload({
-                    id: dataResult.category.list[1].vod_id, // dataResult.category.list.map((v) => v.vod_id),
+                    id: dataResult.category.list[2].vod_id, // dataResult.category.list.map((v) => v.vod_id),
                 });
                 dataResult.detail = resp.json();
                 printErr(resp.json());
@@ -326,14 +374,12 @@ async function test(inReq, outResp) {
                         for (let j = 0; j < flags.length; j++) {
                             const flag = flags[j];
                             const urls = ids[j].split('#');
+                            console.log(urls);
                             for (let i = 0; i < urls.length && i < 2; i++) {
-                                resp = await inReq.server
-                                    .inject()
-                                    .post(`${prefix}/play`)
-                                    .payload({
-                                        flag: flag,
-                                        id: urls[i].split('$')[1],
-                                    });
+                                resp = await inReq.server.inject().post(`${prefix}/play`).payload({
+                                    flag: flag,
+                                    id: urls[i].split('$')[1],
+                                });
                                 dataResult.play.push(resp.json());
                             }
                         }
@@ -341,11 +387,58 @@ async function test(inReq, outResp) {
                 }
             }
         }
+        /*
         resp = await inReq.server.inject().post(`${prefix}/search`).payload({
             wd: '暴走',
             page: 1,
         });
-        dataResult.search = resp.json();
+        dataResult.search = resp.json();*/
+        printErr(resp.json());
+        return dataResult;
+    } catch (err) {
+        console.error(err);
+        outResp.code(500);
+        return { err: err.message, tip: 'check debug console output' };
+    }
+}
+
+async function test(inReq, outResp) {
+    try {
+        // const id = inReq.body.id;
+        const printErr = function (json) {
+            if (json.statusCode && json.statusCode == 500) {
+                console.error(json);
+            }
+        };
+        const prefix = inReq.server.prefix;
+        const dataResult = {};
+        
+        let resp = await inReq.server.inject().post(`${prefix}/detail`).payload({
+            // id: dataResult.category.list[2].vod_id, // dataResult.category.list.map((v) => v.vod_id),
+            id : 733
+        });
+        dataResult.detail = resp.json();
+        printErr(resp.json());
+        if (dataResult.detail.list && dataResult.detail.list.length > 0) {
+            dataResult.play = [];
+            for (const vod of dataResult.detail.list) {
+                const flags = vod.vod_play_from.split('$$$');
+                const ids = vod.vod_play_url.split('$$$');
+                for (let j = 0; j < flags.length; j++) {
+                    const flag = flags[j];
+                    const urls = ids[j].split('#');
+                    console.log(urls);
+                    for (let i = 0; i < urls.length && i < 2; i++) {
+                        resp = await inReq.server.inject().post(`${prefix}/play`).payload({
+                            flag: flag,
+                            id: urls[i].split('$')[1],
+                        });
+                        dataResult.play.push(resp.json());
+                    }
+                }
+            }
+        }
+
         printErr(resp.json());
         return dataResult;
     } catch (err) {

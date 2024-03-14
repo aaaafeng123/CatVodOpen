@@ -23,6 +23,9 @@ export default {
     wobg: {
         url: 'https://wobge.run.goorm.io',
     },
+    xxpan: {
+    url: "https://xpanpan.site"
+    },
     ttkx: {
     url: 'http://www.ttkx.live:3328',
     },

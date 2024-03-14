@@ -123,7 +123,7 @@ async function home(inReq, _outResp) {
 
 async function category(inReq, _outResp) {
     const tid = inReq.body.id;
-    const pg = inReq.body.page;
+    let pg = inReq.body.page;
     if (_.isEmpty(channels[tid])) return '{}';
     let videos = [];
     for (let channelName in channels[tid]) {
@@ -269,8 +269,8 @@ async function test(inReq, outResp) {
 
 export default {
     meta: {
-        key: 'live',
-        name: '直播频道',
+        key: 'live2',
+        name: '直播频道2',
         type: 3,
     },
     api: async (fastify) => {

@@ -26,6 +26,9 @@ export default {
     ttkx: {
     url: 'http://www.ttkx.live:3328',
     },
+    czzy: {
+        url: 'https://cz01.vip'
+    },
     live:{
         url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',
     },

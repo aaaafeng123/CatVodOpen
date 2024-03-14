@@ -2036,7 +2036,7 @@ async function test(inReq, outResp) {
 export default {
     meta: {
         key: 'baipiaoys',
-        name: '🍀 白嫖影视',
+        name: '白嫖影视',
         type: 3,
     },
     api: async (fastify) => {

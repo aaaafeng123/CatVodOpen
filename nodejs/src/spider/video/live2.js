@@ -269,8 +269,8 @@ async function test(inReq, outResp) {
 
 export default {
     meta: {
-        key: 'live2',
-        name: '直播频道2',
+        key: 'live',
+        name: '直播频道',
         type: 3,
     },
     api: async (fastify) => {

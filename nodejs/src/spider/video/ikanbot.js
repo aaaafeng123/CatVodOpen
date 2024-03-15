@@ -260,7 +260,7 @@ async function play(inReq, _outResp) {
 }
 
 async function search(inReq, _outResp) {
-    let pg = inReq.body.page;
+    const pg = inReq.body.page;
     const wd = inReq.body.wd;
     let page = pg || 1;
     if (page == 0) page = 1;
@@ -368,7 +368,7 @@ async function test(inReq, outResp) {
 export default {
     meta: {
         key: 'ikanbot',
-        name: '爱看机器人',
+        name: '爱看视频',
         type: 3,
     },
     api: async (fastify) => {

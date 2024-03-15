@@ -291,7 +291,7 @@ async function play(inReq, _outResp) {
 }
 
 async function search(inReq, _outResp) {
-    let pg = inReq.body.page;
+    const pg = inReq.body.page;
     const wd = inReq.body.wd;
     let page = pg || 1;
     if (page == 0) page = 1;

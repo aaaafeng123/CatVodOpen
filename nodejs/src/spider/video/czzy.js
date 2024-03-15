@@ -314,8 +314,29 @@ async function search(inReq, _outResp) {
     let page = pg || 1;
     if (page == 0) page = 1;
 
+    const html = await request('https://menglv.serv00.net/czzysearch.php?wd=' + wd);
+    let videos = [];
+    // for (const vod of data.data) {
+    if (!_.isEmpty(html) && html != '0 结果') {
+        const records = html.split('$$$');
+        for (const vod of records) {
+            const filed = vod.split('|');
+            videos.push({
+                vod_id: filed[0],
+                vod_name: filed[1],
+                vod_pic: filed[2],
+                vod_remarks: filed[3],
+            });
+        }
+        return JSON.stringify({
+            page: page,
+            list: videos,
+        });
+    }
+
     // 原open.js搜索也是失效,提示: You are unable to access
     // const html = await request(url + '/xsseanmch/?q=' + wd);
+    /*
     const html = await request(url + '/?s=' + wd);
     const $ = load(html);
     const items = $('div.search_list > ul > li');
@@ -333,10 +354,10 @@ async function search(inReq, _outResp) {
     });
     return JSON.stringify({
         list: videos,
-    });
+    });*/
 }
 
-async function test2(inReq, outResp) {
+async function test(inReq, outResp) {
     try {
         const printErr = function (json) {
             if (json.statusCode && json.statusCode == 500) {
@@ -387,58 +408,11 @@ async function test2(inReq, outResp) {
                 }
             }
         }
-        /*
         resp = await inReq.server.inject().post(`${prefix}/search`).payload({
-            wd: '暴走',
+            wd: '爱',
             page: 1,
         });
-        dataResult.search = resp.json();*/
-        printErr(resp.json());
-        return dataResult;
-    } catch (err) {
-        console.error(err);
-        outResp.code(500);
-        return { err: err.message, tip: 'check debug console output' };
-    }
-}
-
-async function test(inReq, outResp) {
-    try {
-        // const id = inReq.body.id;
-        const printErr = function (json) {
-            if (json.statusCode && json.statusCode == 500) {
-                console.error(json);
-            }
-        };
-        const prefix = inReq.server.prefix;
-        const dataResult = {};
-        
-        let resp = await inReq.server.inject().post(`${prefix}/detail`).payload({
-            // id: dataResult.category.list[2].vod_id, // dataResult.category.list.map((v) => v.vod_id),
-            id : 733
-        });
-        dataResult.detail = resp.json();
-        printErr(resp.json());
-        if (dataResult.detail.list && dataResult.detail.list.length > 0) {
-            dataResult.play = [];
-            for (const vod of dataResult.detail.list) {
-                const flags = vod.vod_play_from.split('$$$');
-                const ids = vod.vod_play_url.split('$$$');
-                for (let j = 0; j < flags.length; j++) {
-                    const flag = flags[j];
-                    const urls = ids[j].split('#');
-                    console.log(urls);
-                    for (let i = 0; i < urls.length && i < 2; i++) {
-                        resp = await inReq.server.inject().post(`${prefix}/play`).payload({
-                            flag: flag,
-                            id: urls[i].split('$')[1],
-                        });
-                        dataResult.play.push(resp.json());
-                    }
-                }
-            }
-        }
-
+        dataResult.search = resp.json();
         printErr(resp.json());
         return dataResult;
     } catch (err) {

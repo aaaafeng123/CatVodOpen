@@ -17,6 +17,7 @@ import tudou from './spider/video/tudou.js';
 import wobg from './spider/video/wobg.js';
 import upyun from './spider/video/upyun.js';
 import xxpan from './spider/video/xxpan.js';
+import yingso from './spider/video/yingso.js';
 import yunpanres from './spider/video/yunpanres.js';
 import pansearch from './spider/video/pansearch.js';
 import bqr from './spider/video/bqr.js';
@@ -43,7 +44,7 @@ import cntv from './spider/video/cntv.js';
 import czzy from './spider/video/czzy.js';
 import subaibai from './spider/video/subaibai.js';
 
-const spiders = [douban, kunyu77, kkys, ng, mayiya, baipiaoys, ffm3u8, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, ysche, tudou, wobg, upyun, xxpan, yunpanres, pansearch, bqr, maiyoux, libvio, ikanbot, wjm3u8, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8, clm3u8, wenku, fengche, bengou, coco, nicoletv, live, live2, ttkx, anfun, cntv, czzy, subaibai];
+const spiders = [douban, kunyu77, kkys, ng, mayiya, baipiaoys, ffm3u8, push, alist, _13bqg, laobaigs, baozi, copymanga, wogg, ysche, tudou, wobg, upyun, xxpan, yingso, yunpanres, pansearch, bqr, maiyoux, libvio, ikanbot, wjm3u8, hhm3u8, lzm3u8, hnm3u8, subm3u8, xlm3u8, clm3u8, wenku, fengche, bengou, coco, nicoletv, live, live2, ttkx, anfun, cntv, czzy, subaibai];
 const spiderPrefix = '/spider';
 
 /**

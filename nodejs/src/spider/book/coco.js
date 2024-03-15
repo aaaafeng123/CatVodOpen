@@ -2,9 +2,8 @@ import req from '../../util/req.js';
 import { MOBILE_UA } from '../../util/misc.js';
 import { load } from 'cheerio';
 
-let url = 'https://cn.baozimh.com';
-const img = 'https://static-tw.baozimh.com/cover/';
-const img2 = '?w=285&h=375&q=100';
+
+let url = 'https://cn.godamanga.site';
 
 async function request(reqUrl) {
     let resp = await req.get(reqUrl, {
@@ -21,133 +20,120 @@ async function init(_inReq, _outResp) {
 }
 
 async function home(_inReq, _outResp) {
-    var html = await request(url + '/classify');
+    var html = await request(url+"/manga-genre");
     const $ = load(html);
-    let filterObj = { c1: [] };
-    for (const nav of $('div.classify div.nav')) {
-        const as = $(nav).find('a.item');
-        const checkUrl = decodeURIComponent(as[1].attribs.href);
-        const reg = /type=(.*)&region=(.*)&state=(.*)&filter=(.*)/;
-        const matchs = checkUrl.match(reg);
-        let typeKey = '';
-        let typeIdx = 1;
-        if (matchs[1] != 'all') {
-            typeKey = 'type';
-            typeIdx = 1;
-        } else if (matchs[2] != 'all') {
-            typeKey = 'region';
-            typeIdx = 2;
-        } else if (matchs[3] != 'all') {
-            typeKey = 'state';
-            typeIdx = 3;
-        } else if (matchs[4] != '*') {
-            typeKey = 'filter';
-            typeIdx = 4;
-        }
-        const tvals = [];
-        for (const a of as) {
-            tvals.push({
-                n: $(a).text().trim(),
-                v: decodeURIComponent(a.attribs.href).match(reg)[typeIdx],
-            });
-        }
-        filterObj['c1'].push({
-            key: typeKey,
-            name: '',
-            wrap: typeIdx == 1 ? 1 : 0,
-            init: typeIdx == 4 ? '*' : 'all',
-            value: tvals,
+    let classes = [];
+    for (const a of $('div.overflow-x-auto > a[href!="/manga"]')) {
+        classes.push({
+            type_id: a.attribs.href,
+            type_name: $(a).find(".abutton").text().trim().replace("#",'')
         });
     }
-
     return {
-        class: [{ type_name: 'all', type_id: 'c1' }],
-        filters: filterObj,
+        class: classes,
     };
 }
 
 async function category(inReq, _outResp) {
     const tid= inReq.body.id;
     const pg =inReq.body.page;
-    const extend = inReq.body.filters;
     let page = pg || 1;
     if (page == 0) page = 1;
-    let link = `${url}/api/bzmhq/amp_comic_list?type=${extend.type || 'all'}&region=${extend.region || 'all'}&state=${extend.state || 'all'}&filter=${extend.filter || '*'}`;
-    link += '&page=' + page + '&limit=36&language=cn';
-    var html = await request(link);
+    var html = await request(url + `/${tid}/page/${page}`);
+    const $ = load(html);
     let books = [];
-    for (const book of html.items) {
+    for (const pb of $('div.pb-2')) {
+        const a = $(pb).find('a:first')[0];
+        const img = $(a).find('img:first')[0];
+        const h3 = $(pb).find('h3:first')[0];
         books.push({
-            book_id: book.comic_id,
-            book_name: book.name,
-            book_pic: img + book.topic_img + img2,
-            book_remarks: book.author || '',
+            book_id: a.attribs.href,
+            book_name: h3.children[0].data.trim(),
+            book_pic: img.attribs.src
         });
     }
     return {
         page: page,
-        pagecount: books.length == 36 ? page + 1 : page,
+        pagecount: $('a:contains(下一页)').length === 0 ? page + 1: page ,
         list: books,
     };
 }
 
 async function detail(inReq, _outResp) {
-    const ids = !Array.isArray(inReq.body.id) ? [inReq.body.id] : inReq.body.id;
+    const ids = [inReq.body.id];
     const books = [];
-    for(const id of ids){
-    var html = await request(`${url}/comic/${id}`);
-    const $ = load(html);
-    let book = {
-        book_director: $('[data-hid$=og:novel:author]')[0].attribs.content || '',
-        book_content: $('[data-hid$=og:description]')[0].attribs.content || '',
-    };
-    const formatUrl = (_, a) => {
-        return $(a).text().replace(/\$|#/g, '').trim() + '$' + decodeURIComponent(a.attribs.href);
-    };
-    let urls =$('div#chapter-items a.comics-chapters__item').map(formatUrl).get();
-    urls.push(...$('div#chapters_other_list a.comics-chapters__item').map(formatUrl).get());
-    if (urls.length == 0) {
-        urls = $('div.pure-g a.comics-chapters__item').map(formatUrl).get().reverse();
+    for (const id of ids) {
+    var info = id.split('/');
+        var html = await request(url+`${id}`);
+        let $ = load(html);
+        let book = {
+            book_name: $('h1').text().trim(),
+            book_director: $('div.text-small>a[href*="/author/"]')
+                .map((_, a) => $(a).text().trim())
+                .get()
+                .join('/'),
+            book_content: $('#info > div:nth-child(1) > div.block.text-left.mx-auto > p').text().trim(),
+        };
+        html = await request(url + `/chapterlist/${info[2]}`);
+        $ = load(html);
+        let urls = [];
+        const links = $('div.chapteritem>a[href*="/m.cocolamanhua.com/manga/"]');
+        for (const l of links) {
+            var name = $(l).text().trim();
+            var link = l.attribs.href;
+            urls.push(name + '$' + link);
+        }
+        book.volumes = '全卷';
+        book.urls = urls.join('#');
+        books.push(book);
     }
-    book.volumes = '默认';
-    book.urls = urls.join('#');
-    books.push(book);
-}
     return {
         list: books,
-    };
+     };
 }
 
 async function play(inReq, _outResp) {
     let id = inReq.body.id;
-    var html = await request(url + id);
-        const $ = load(html);
-
-        var content = [];
-        for (const img of $('amp-img')) {
-            content.push(img.attribs.src);
+    var html = await request(id);
+    let $ = load(html);
+    var content = [];
+    let flag = 0;
+   for (const l of $('.w-full.h-full> img')){
+   if(flag == 0){
+   const img = $(l).attr('src');
+        flag = 1;
+       // const jpg = sharp(img.toString()).toFormat('jpeg')
+        content.push(img);
+   }
+   else{
+       const img = $(l).attr('data-src');
+       // const jpg = sharp(img.toString()).toFormat('jpeg')
+        content.push(img);
         }
-        return {
-            content: content,
-        };
+    }
+    return {
+        content: content
+    };
 }
 
 async function search(inReq, _outResp) {
     const wd = inReq.body.wd;
-    var html = await request(`${url}/search?q=${wd}`);
+    const pg =inReq.body.page;
+    let page = pg || 1;
+    if (page == 0) page = 1;
+    const html = await request(`${url}/s/${wd}?page=${page}`);
     const $ = load(html);
-    const books = [];
-    for (const a of $('div.classify-items a.comics-card__poster')) {
+    let books = [];
+    for (const pb of $('.pb-2')) {
         books.push({
-            book_id: a.attribs.href.replace('/comic/', ''),
-            book_name: a.attribs.title,
-            book_pic: $(a).find('amp-img:first')[0].attribs.src,
-            book_remarks: '',
+            book_id: $(pb).find('a:first')[0].attribs.href,
+            book_name: $(pb).text().trim(),
+            book_pic: $(pb).find('img:first')[0].attribs.src,
         });
     }
     return {
-        page: 1,
-        pagecount: 1,
+        page: page,
+        pagecount: $('a:contains(下一页)').length ==0 ? page + 1: page,
         list: books,
     };
 }
@@ -221,8 +207,8 @@ async function test(inReq, outResp) {
 
 export default {
     meta: {
-        key: 'baozimh',
-        name: '包子漫画',
+        key: 'coco',
+        name: 'CoCo漫画',
         type: 20,
     },
     api: async (fastify) => {

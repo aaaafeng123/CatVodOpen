@@ -3,7 +3,7 @@ import pkg from 'lodash';
 const { _ } = pkg;
 import { MAC_UA } from '../../util/misc.js';
 
-let live = '';
+let live2 = '';
 let exts = [];
 
 function getHeader() {
@@ -95,13 +95,13 @@ function txt(text) {
 
 // cfg = {skey: siteKey, ext: extend}
 async function init(inReq, _outRes) {
-    exts = inReq.server.config.live.url;
+    exts = inReq.server.config.live2.url;
     for(const ext of exts){
-    live = await getString(ext, getHeader());
-    if (live.startsWith('#EXTM3U')) {
-        m3u(live);
+    live2 = await getString(ext, getHeader());
+    if (live2.startsWith('#EXTM3U')) {
+        m3u(live2);
     } else {
-        txt(live);
+        txt(live2);
     }
     }
 }
@@ -269,8 +269,8 @@ async function test(inReq, outResp) {
 
 export default {
     meta: {
-        key: 'live',
-        name: '直播频道',
+        key: 'live2',
+        name: '直播频道2',
         type: 3,
     },
     api: async (fastify) => {

@@ -75,7 +75,7 @@ function parseVodList(resp, pg, limit) {
     vod ={
             vod_id: quarkUrl + item.key,
             vod_name: item.title,
-            vod_pic: 'https://inews.gtimg.com/newsapp_bt/0/13263837859/1000',
+            vod_pic: 'https://i2.100024.xyz/2024/03/15/o4d8hp.webp',
             vod_remarks: dayjs(item.time*1000).format('YY/MM/DD hh:mm'),
         };
     else continue;

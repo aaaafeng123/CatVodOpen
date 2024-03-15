@@ -42,7 +42,7 @@ export default {
         url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',
     },
     live2:{
-        url: ['https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u','https://gh.2i.gs/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt']
+        url: ['https://mirror.ghproxy.com/raw.githubusercontent.com/dxawi/0/main/tvlive.txt','https://gh.2i.gs/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt']
     },
     wjm3u8: {
         url: 'https://api.wujinapi.me/api.php/provide/vod/from/wjm3u8/at/xml/',

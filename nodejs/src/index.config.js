@@ -44,6 +44,26 @@ export default {
     live2:{
         url: ['https://mirror.ghproxy.com/raw.githubusercontent.com/dxawi/0/main/tvlive.txt','https://gh.2i.gs/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt']
     },
+    vcm3u8: {
+       lsm3u8: [{
+      name: '乐视采集',
+      url: 'https://leshizyapi.com/api.php/provide/vod',
+      categories: ['动作片','爱情片','喜剧片','科幻片','恐怖片','剧情片','战争片','犯罪片','奇幻片','灾难片','悬疑片','动画片','短剧','国产剧','欧美剧','香港剧','韩国剧','日剧','台湾剧','海外剧','泰国剧','国产动漫','日本动漫','欧美动漫','海外动漫','大陆综艺','港台综艺','日韩综艺','欧美综艺','纪录片'],
+      search: true
+    }],
+    baidu: [{
+      name: '百度采集',
+      url: 'https://api.apibdzy.com/api.php/provide/vod/from/dbm3u8/',
+      categories: ['动作片','喜剧片','爱情片','科幻片','恐怖片','剧情片','战争片','国产剧','欧美剧','韩剧','日剧','港剧','台剧','泰剧','海外剧','纪录片','大陆综艺','日韩综艺','港台综艺','欧美综艺','国产动漫','日韩动漫','欧美动漫','动画片','港台动漫','海外动漫','悬疑片','邵氏电影','电影资讯','明星资讯','预告片'],
+      search: true
+    }],
+    kuaikan: [{
+      name: '快看采集',
+      url: 'https://kuaikan-api.com/api.php/provide/vod/from/kuaikan/',
+      categories: ['网络电影','惊悚片','犯罪片','灾难片','悬疑片','爱情片','喜剧片','奇幻片','恐怖片','剧情片','战争片','动作片','冒险片','动画电影','热门短剧','国产剧','欧美剧','港台剧','韩国剧','日本剧','台剧','泰剧','国产动漫','日本动漫','欧美动漫','港台动漫','韩国动漫','国产综艺','日本综艺','港台综艺','欧美综艺','韩国综艺','纪录片','电影解说'],
+      search: true
+    }]
+    },
     wjm3u8: {
         url: 'https://api.wujinapi.me/api.php/provide/vod/from/wjm3u8/at/xml/',
         categories: ['短剧', '大陆综艺', '日本剧', '美国剧', '剧情片', '动作片', '国产剧', '恐怖片', '泰剧', '国产动漫', '日韩综艺', '港台综艺', '爱情片', '韩国剧', '香港剧', '海外剧', '纪录片', '喜剧片', '欧美动漫', '体育赛事', '日韩动漫', '台湾剧', '动画片', '喜剧', '影视解说', '科幻片', '悬疑片'],

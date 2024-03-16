@@ -5,6 +5,8 @@ import * as HLS from 'hls-parser';
 import * as Ali from '../../util/ali.js';
 import * as Quark from '../../util/quark.js';
 import dayjs from 'dayjs';
+import pkg from 'lodash';
+const { _ } = pkg;
 
 let url = 'https://xpanpan.site';
 
@@ -34,7 +36,7 @@ async function init(inReq, _outResp) {
 }
 
 async function home(inReq, _outResp) {
-    const classes = [{'type_id':'all','type_name':'all'}];
+    const classes = [{'type_id':'ali-yun-pan-list','type_name':'阿里云盘'},{'type_id':'kua-ke-wang-pan-list','type_name':'夸克云盘'},{'type_id':'video-tv-list','type_name':'影视资源'},{'type_id':'cartoon-list','type_name':'动漫天堂'}];
     const filterObj = {};
     return {
         class: classes,
@@ -44,12 +46,13 @@ async function home(inReq, _outResp) {
 
 async function category(inReq, _outResp) {
     let pg = inReq.body.page;
+    const tid = inReq.body.id;
     if (pg <= 0) pg = 1;
     let page = '';
     if (pg > 1) {
         page = '/page/' + pg;
     }
-    const html = await request(url + page + '/');
+    const html = await request(url + '/category/' + tid +page + '/');
     return parseHtmlList(html, pg);
 }
 
@@ -63,7 +66,7 @@ function parseHtmlList(html, pg) {
         videos.push({
             vod_id: title.attr('href'),
             vod_name: title.attr('title'),
-            vod_pic: 'https://pic.rmb.bdstatic.com/bjh/6a2278365c10139b5b03229c2ecfeea4.jpeg',
+            vod_pic: 'https://xpanpan.site/wp-content/uploads/2024/01/pan-logo-circle-one.png',
             vod_remarks: '',
         });
     }
@@ -88,7 +91,7 @@ async function detail(inReq, _outResp) {
         let vod = {
             vod_id: id,
             vod_name: $($('.entry-content h6')).text(),
-            vod_pic: 'https://pic.rmb.bdstatic.com/bjh/6a2278365c10139b5b03229c2ecfeea4.jpeg',
+            vod_pic: 'https://xpanpan.site/wp-content/uploads/2024/01/pan-logo-circle-one.png',
         };
         const shareUrls = $('div.entry-content ul li a')
             .map((_, a) => a.children[0].data)

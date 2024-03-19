@@ -88,7 +88,7 @@ export default {
             search: true, //搜索开关 true开 false关
         }],
     },
-    vcm3u8: {
+    m3u8cj: {
        lsm3u8: [{
       name: '乐视采集',
       url: 'https://leshizyapi.com/api.php/provide/vod',

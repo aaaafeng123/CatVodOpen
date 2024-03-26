@@ -18,7 +18,7 @@ export default {
         url: 'https://wogg.xyz',
     },
     tudou: {
-        url: 'https://aliz.lvdoui.top',
+        url: 'https://tudou.lvdoui.top/',
     },
     wobg: {
         url: 'https://wobge.run.goorm.io',

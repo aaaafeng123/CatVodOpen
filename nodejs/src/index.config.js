@@ -36,7 +36,7 @@ export default {
     url: 'https://www.aikanbot.com'
     },
     libvio: {
-        url: 'www.libvio.pro'
+        url: 'https://www.libviohd.com'
     },
     live:{
         url: 'https://gh.2i.gs/https://raw.githubusercontent.com/fanmingming/live/main/tv/m3u/ipv6.m3u',

@@ -33,7 +33,7 @@ export default {
         url: 'https://cz01.vip'
     },
     ikanbot: {
-    url: 'https://www.aikanbot.com'
+    url: 'https://www.ikanbot.com'
     },
     libvio: {
         url: 'https://www.libviohd.com'

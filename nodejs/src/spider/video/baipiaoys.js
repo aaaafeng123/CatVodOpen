@@ -2,7 +2,7 @@ import { IOS_UA } from '../../util/misc.js';
 import req from '../../util/req.js';
 import { load } from 'cheerio';
 
-let HOST = 'http://www.baipiaoys.cc';
+let HOST = 'http://www.baipiaoys.com';
 
 async function request(reqUrl) {
     let res = await req.get(reqUrl, {

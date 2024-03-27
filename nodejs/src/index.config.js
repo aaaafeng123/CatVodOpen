@@ -26,6 +26,9 @@ export default {
     xxpan: {
     url: "https://xpanpan.site"
     },
+    cm: {
+    url: "https://tv.yydsys.top"
+    },
     ttkx: {
     url: 'http://www.ttkx.live:3328',
     },

@@ -18,13 +18,22 @@ async function support(inReq, _outResp) {
     return 'true';
 }
 
+function conversion(bytes){
+  let mb = bytes / (1024 * 1024);
+  if(mb > 1024){
+    return `${(mb/1024).toFixed(2)}GB`;
+    }else{
+        return `${parseInt(mb).toFixed(2)}MB`;
+    }
+}
+
 async function detail(inReq, _outResp) {
     const ids = !Array.isArray(inReq.body.id) ? [inReq.body.id] : inReq.body.id;
     let shareUrls = ids;
     const videos = [];
     const regex = new RegExp('/s/');
     for (const id of ids) {
-        let vod = {
+    let vod = {
             vod_id: id,
             vod_content: id,
             vod_name: '推送',
@@ -36,7 +45,7 @@ async function detail(inReq, _outResp) {
         videos.push(vod);
     }
     else{
-        const froms = [];
+const froms = [];
         const urls = [];
         for (const shareUrl of shareUrls) {
             const shareData = Ali.getShareData(shareUrl);
@@ -48,7 +57,8 @@ async function detail(inReq, _outResp) {
                         videos
                             .map((v) => {
                                 const ids = [v.share_id, v.file_id, v.subtitle ? v.subtitle.file_id : ''];
-                                return formatPlayUrl('', v.name) + '$' + ids.join('*');
+                                const size = conversion(v.size);
+                                return formatPlayUrl('', `[${size}]  ${v.name.replace(/.[^.]+$/,'')}`) + '$' + ids.join('*');
                             })
                             .join('#'),
                     );
@@ -63,7 +73,8 @@ async function detail(inReq, _outResp) {
                             videos
                                 .map((v) => {
                                     const ids = [shareData.shareId, v.stoken, v.fid, v.share_fid_token, v.subtitle ? v.subtitle.fid : '', v.subtitle ? v.subtitle.share_fid_token : ''];
-                                    return formatPlayUrl('', v.file_name) + '$' + ids.join('*');
+                                    const size = conversion(v.size);
+                                    return formatPlayUrl('', `[${size}]  ${v.file_name.replace(/.[^.]+$/,'')}`) + '$' + ids.join('*');
                                 })
                                 .join('#'),
                         );
@@ -204,14 +215,21 @@ async function proxy(inReq, outResp) {
     }
 }
 
+function findElementIndex(arr, elem) {
+  return arr.indexOf(elem);
+}
+
 async function play(inReq, _outResp) {
     const flag = inReq.body.flag;
     const id = inReq.body.id;
     const ids = id.split('*');
+    let idx = 0;
     if (flag.startsWith('Ali-')) {
         const transcoding = await Ali.getLiveTranscoding(ids[0], ids[1]);
         aliTranscodingCache[ids[1]] = transcoding;
         transcoding.sort((a, b) => b.template_width - a.template_width);
+        const p= ['1440P','1080P','720P','480P','360P'];
+        const arr =['QHD','FHD','HD','SD','LD'];
         const urls = [];
         const proxyUrl = inReq.server.address().url + inReq.server.prefix + '/proxy/ali';
         urls.push('SRC');
@@ -226,7 +244,8 @@ async function play(inReq, _outResp) {
             };
         }
         transcoding.forEach((t) => {
-            urls.push(t.template_id);
+            idx = findElementIndex(arr,t.template_id);
+            urls.push(p[idx]);
             urls.push(`${proxyUrl}/trans/${t.template_id.toLowerCase()}/${ids[0]}/${ids[1]}/.m3u8`);
         });
         return result;
@@ -234,11 +253,13 @@ async function play(inReq, _outResp) {
         const transcoding = (await Quark.getLiveTranscoding(ids[0], ids[1], ids[2], ids[3])).filter((t) => t.accessable);
         quarkTranscodingCache[ids[2]] = transcoding;
         const urls = [];
+        const p= ['2160P','1440P','1080P','720P','480P','360P'];
+        const arr =['4k','2k','super','high','low','normal'];
         const proxyUrl = inReq.server.address().url + inReq.server.prefix + '/proxy/quark';
+        urls.push('Proxy');
+        urls.push(`${proxyUrl}/src/down/${ids[0]}/${encodeURIComponent(ids[1])}*${ids[2]}*${ids[3]}/.bin`);
         urls.push('SRC');
         urls.push(`${proxyUrl}/src/redirect/${ids[0]}/${encodeURIComponent(ids[1])}*${ids[2]}*${ids[3]}/.bin`);
-        urls.push('SRC_Proxy');
-        urls.push(`${proxyUrl}/src/down/${ids[0]}/${encodeURIComponent(ids[1])}*${ids[2]}*${ids[3]}/.bin`);
         const result = {
             parse: 0,
             url: urls,
@@ -255,18 +276,19 @@ async function play(inReq, _outResp) {
             };
         }
         transcoding.forEach((t) => {
-            urls.push(t.resolution.toUpperCase());
+            idx = findElementIndex(arr,t.resolution);
+            urls.push(p[idx]);
             urls.push(`${proxyUrl}/trans/${t.resolution.toLowerCase()}/${ids[0]}/${encodeURIComponent(ids[1])}*${ids[2]}*${ids[3]}/.mp4`);
         });
         return result;
-        }
-    else if (id.indexOf('.m3u8') < 0) {
+    }
+    else if (id.indexOf('.m3u8') < 0 ) {
         const sniffer = await inReq.server.messageToDart({
             action: 'sniff',
             opt: {
                 url: id,
                 timeout: 10000,
-                rule: 'http((?!http).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)(?!\\?)',
+                rule: 'http((?!://muzhi-video\.bj\.bcebos)(?!.*player)(?!.*index).){12,}?\\.(m3u8|mp4|flv|avi|mkv|rm|wmv|mpg|m4a|mp3)(?!\\?)',
             },
         });
         if (sniffer && sniffer.url) {

@@ -17,6 +17,9 @@ export default {
     wogg: {
         url: 'https://wogg.xyz',
     },
+    wogg1: {
+        url: 'https://wogg.xyz',
+    },
     tudou: {
         url: 'https://tudou.lvdoui.top/',
     },

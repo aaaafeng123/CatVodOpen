@@ -13,7 +13,7 @@ import CryptoJS from 'crypto-js';
 let aliUrl = 'https://www.aliyundrive.com/s/';
 let quarkUrl = 'https://pan.quark.cn/s/';
 let host = 'https://yingso.fun';
-let url = host + ':3000';
+let url = host + ':3001/v3';
 
 async function request(reqUrl, data) {
     const res = await req(reqUrl, {
@@ -56,6 +56,7 @@ async function category(inReq, _outResp) {
         pageSize: limit,
         pageNum: pg,
         root: tid,
+        cat: 'all',
     };
     const resp = await request(url + '/ali/all', params);
     return parseVodList(resp, pg, limit);
@@ -329,12 +330,15 @@ async function play(inReq, _outResp) {
 async function search(inReq, _outResp) {
     let pg = inReq.body.page;
     const wd = inReq.body.wd;
+    const id = inReq.body.id;
     if (pg <= 0) pg = 1;
     const limit = 30;
     const params = {
         pageSize: limit,
         pageNum: pg,
-        title: wd
+        title: wd,
+        root: id,
+        cat: 'all'
     };
     const resp = await request(url + '/ali/search', params);
     // console.log(resp);

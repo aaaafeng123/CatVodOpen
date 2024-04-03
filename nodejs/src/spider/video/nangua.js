@@ -268,7 +268,7 @@ async function test(inReq, outResp) {
 
 export default {
     meta: {
-        key: 'nangua1',
+        key: 'nangua',
         name: '🎃|南瓜影视',
         type: 3,
     },
